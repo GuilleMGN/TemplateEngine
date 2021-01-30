@@ -13,7 +13,41 @@ const render = require("./lib/htmlRenderer");
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'Please enter your name: '
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Please enter your ID number: '
+        },
+        {
+            type: 'list',
+            name: 'role',
+            choices: [
+                'Intern',
+                'Engineer',
+                'Manager',
+            ], 
+        },
+        {   // Ask for EMAIL ADDRESS
+            type: 'input',
+            name: 'email',
+            message: "Please enter your email address: ",
+            validate: answer => {
+                const pass = answer.match(/\S+@\S+\.\S+/);
+                if (pass) {
+                    return true;
+                }
+                return "Please enter a valid email address! ";
+            }
+        },
 
+    ]);
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
