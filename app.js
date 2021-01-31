@@ -9,8 +9,8 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-const { type } = require("os");
 
+const ids = [];
 const team = [];
 newEmployee = () => {
     inquirer.prompt([
@@ -32,13 +32,21 @@ newEmployee = () => {
                     break;
                 case 'Intern':
                     newIntern();
+                    break;
                 // After the user has input all employees desired, call the `render` function (required
                 // above) and pass in an array containing all employee objects; the `render` function will
                 // generate and return a block of HTML including templated divs for each employee!
                 case 'None of the above':
-                    render(team);
+                    createTeam();
+                    break;
             }
         });
+}
+createTeam = () => {
+    if (!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR);
+    }
+    fs.writeFileSync(outputPath, render(team), "utf8")
 }
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
@@ -47,12 +55,30 @@ newManager = () => {
         {
             type: 'input',
             name: 'name',
-            message: "Please enter the Manager's name: "
+            message: "Please enter the Manager's name: ",
+            validate: answer => {
+                if (answer !== "") {
+                    return true;
+                }
+                return "Please enter a name";
+            } 
         },
         {
             type: 'input',
             name: 'id',
-            message: "Please enter the Manager's ID number: "
+            message: "Please enter the Manager's ID number: ",
+            validate: answer => {
+                const pass = answer.match(/^[0-9]+$/);
+                if (pass) { 
+                    if (ids.includes(answer)) {
+                        return "This ID is already in use! Please try again. ";
+                    }
+                    else {
+                        return true;
+                    }
+                }
+                return "Please enter a valid ID number! ";
+            }
         },
         {
             type: 'input',
@@ -75,6 +101,7 @@ newManager = () => {
         .then((data) => {
             const manager = new Manager(data.name, data.id, data.email, data.office);
             team.push(manager);
+            ids.push(data.id);
             newEmployee();
         });
 }
@@ -88,7 +115,19 @@ newEngineer = () => {
         {
             type: 'input',
             name: 'id',
-            message: "Please enter the Engineer's ID number: "
+            message: "Please enter the Engineer's ID number: ",
+            validate: answer => {
+                const pass = answer.match(/^[0-9]+$/);
+                if (pass) { 
+                    if (ids.includes(answer)) {
+                        return "This ID is already in use! Please try again. ";
+                    }
+                    else {
+                        return true;
+                    }
+                }
+                return "Please enter a valid ID number! ";
+            }
         },
         {
             type: 'input',
@@ -124,7 +163,19 @@ newIntern = () => {
         {
             type: 'input',
             name: 'id',
-            message: "Please enter the Intern's ID number: "
+            message: "Please enter the Intern's ID number: ",
+            validate: answer => {
+                const pass = answer.match(/^[0-9]+$/);
+                if (pass) { 
+                    if (ids.includes(answer)) {
+                        return "This ID is already in use! Please try again. ";
+                    }
+                    else {
+                        return true;
+                    }
+                }
+                return "Please enter a valid ID number! ";
+            }
         },
         {
             type: 'input',
