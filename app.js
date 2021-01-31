@@ -9,35 +9,27 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const { type } = require("os");
 
-
+const team = [];
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-inquirer
-    .prompt([
+newManager = () => {
+    inquirer.prompt([
         {
             type: 'input',
             name: 'name',
-            message: 'Please enter your name: '
+            message: "Please enter the Manager's name: "
         },
         {
             type: 'input',
             name: 'id',
-            message: 'Please enter your ID number: '
+            message: "Please enter the Manager's ID number: "
         },
         {
-            type: 'list',
-            name: 'role',
-            choices: [
-                'Intern',
-                'Engineer',
-                'Manager',
-            ], 
-        },
-        {   // Ask for EMAIL ADDRESS
             type: 'input',
             name: 'email',
-            message: "Please enter your email address: ",
+            message: "Please enter the Manager's email address: ",
             validate: answer => {
                 const pass = answer.match(/\S+@\S+\.\S+/);
                 if (pass) {
@@ -46,11 +38,120 @@ inquirer
                 return "Please enter a valid email address! ";
             }
         },
+        {
+            type: 'input',
+            name: 'office',
+            message: "Please enter the Manager's office number: "
+        },
+    ])
+        .then((data) => {
+            const manager = new Manager(data.name, data.id, data.email, data.office);
+            team.push(manager);
+            newEmployee();
+        });
+}
+newEmployee = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'role',
+            message: 'Which Team Member would you like to add? ',
+            choices: [
+                'Engineer',
+                'Intern',
+                'None of the above'
+            ]
+        }
+    ])
+        .then((data) => {
+            switch (data.role) {
+                case 'Engineer':
+                    newEngineer();
+                    break;
+                case 'Intern':
+                    newIntern();
+                case 'None of the above':
+                    render(team);
+            }
+        })
+}
+newEngineer = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: "Please enter the Engineer's name: "
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: "Please enter the Engineer's ID number: "
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: "Please enter the Manager's email address: ",
+            validate: answer => {
+                const pass = answer.match(/\S+@\S+\.\S+/);
+                if (pass) {
+                    return true;
+                }
+                return "Please enter a valid email address! ";
+            }
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: "Please enter the Engineer's GitHub username: "
+        },
+    ])
+        .then((data) => {
+            const engineer = new Engineer(data.name, data.id, data.email, data.github);
+            team.push(engineer);
+            newEmployee();
+        });
+}
+newIntern = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: "Please enter the Intern's name: "
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: "Please enter the Intern's ID number: "
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: "Please enter the Intern's email address: ",
+            validate: answer => {
+                const pass = answer.match(/\S+@\S+\.\S+/);
+                if (pass) {
+                    return true;
+                }
+                return "Please enter a valid email address! ";
+            }
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: "Please enter the Intern's school: "
+        }
+    ])
+        .then((data) => {
+            const intern = new Intern(data.name, data.id, data.email, data.school);
+            team.push(intern);
+            newEmployee();
+        });
+}
 
-    ]);
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
+newManager();
+    // After the user has input all employees desired, call the `render` function (required
+    // above) and pass in an array containing all employee objects; the `render` function will
+    // generate and return a block of HTML including templated divs for each employee!
 
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
