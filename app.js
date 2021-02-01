@@ -140,7 +140,7 @@ newEngineer = () => {
         {   // Ask for Engineer's email address
             type: 'input',
             name: 'email',
-            message: "Please enter the Manager's email address: ",
+            message: "Please enter the Engineer's email address: ",
             validate: answer => {
                 const pass = answer.match(/\S+@\S+\.\S+/);
                 if (pass) {
