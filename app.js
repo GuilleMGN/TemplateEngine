@@ -10,11 +10,15 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+// Stores IDs to avoid any duplicates upon creation
 const ids = [];
+// List of team members and their information
 const team = [];
+
+// Prompt user to add a new employee
 newEmployee = () => {
     inquirer.prompt([
-        {
+        {   // Ask which team member to add
             type: 'list',
             name: 'role',
             message: 'Which Team Member would you like to add? ',
@@ -24,35 +28,32 @@ newEmployee = () => {
                 'None of the above'
             ]
         }
-    ])
-        .then((data) => {
-            switch (data.role) {
-                case 'Engineer':
-                    newEngineer();
-                    break;
-                case 'Intern':
-                    newIntern();
-                    break;
-                // After the user has input all employees desired, call the `render` function (required
-                // above) and pass in an array containing all employee objects; the `render` function will
-                // generate and return a block of HTML including templated divs for each employee!
-                case 'None of the above':
-                    createTeam();
-                    break;
-            }
-        });
+    ]).then((data) => {
+        switch (data.role) {
+            case 'Engineer':
+                newEngineer();
+                break;
+            case 'Intern':
+                newIntern();
+                break;
+            case 'None of the above':
+                createTeam();
+                break;
+        }
+    });
 }
+// This will call the render function to generate the HTML block of divs for each employee
+// First it will check if directory already exists. If not, it will create a new one
 createTeam = () => {
     if (!fs.existsSync(OUTPUT_DIR)) {
         fs.mkdirSync(OUTPUT_DIR);
     }
     fs.writeFileSync(outputPath, render(team), "utf8")
 }
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
+// Get information for the Manager
 newManager = () => {
     inquirer.prompt([
-        {
+        {   // Ask for Manager's name
             type: 'input',
             name: 'name',
             message: "Please enter the Manager's name: ",
@@ -60,16 +61,16 @@ newManager = () => {
                 if (answer !== "") {
                     return true;
                 }
-                return "Please enter a name";
-            } 
+                return "Please enter a name! ";
+            }
         },
-        {
+        {   // Ask for Manager's ID number
             type: 'input',
             name: 'id',
             message: "Please enter the Manager's ID number: ",
             validate: answer => {
                 const pass = answer.match(/^[0-9]+$/);
-                if (pass) { 
+                if (pass) {
                     if (ids.includes(answer)) {
                         return "This ID is already in use! Please try again. ";
                     }
@@ -80,7 +81,7 @@ newManager = () => {
                 return "Please enter a valid ID number! ";
             }
         },
-        {
+        {   // Ask for Manager's email address
             type: 'input',
             name: 'email',
             message: "Please enter the Manager's email address: ",
@@ -92,7 +93,7 @@ newManager = () => {
                 return "Please enter a valid email address! ";
             }
         },
-        {
+        {   // Ask for Manager's office number
             type: 'input',
             name: 'office',
             message: "Please enter the Manager's office number: "
@@ -105,20 +106,27 @@ newManager = () => {
             newEmployee();
         });
 }
+// Get information for the Engineer
 newEngineer = () => {
     inquirer.prompt([
-        {
+        {   // Ask for Engineer's name
             type: 'input',
             name: 'name',
-            message: "Please enter the Engineer's name: "
+            message: "Please enter the Engineer's name: ",
+            validate: answer => {
+                if (answer !== "") {
+                    return true;
+                }
+                return "Please enter a name! ";
+            }
         },
-        {
+        {   // Ask for Engineer's ID
             type: 'input',
             name: 'id',
             message: "Please enter the Engineer's ID number: ",
             validate: answer => {
                 const pass = answer.match(/^[0-9]+$/);
-                if (pass) { 
+                if (pass) {
                     if (ids.includes(answer)) {
                         return "This ID is already in use! Please try again. ";
                     }
@@ -129,7 +137,7 @@ newEngineer = () => {
                 return "Please enter a valid ID number! ";
             }
         },
-        {
+        {   // Ask for Engineer's email address
             type: 'input',
             name: 'email',
             message: "Please enter the Manager's email address: ",
@@ -141,10 +149,16 @@ newEngineer = () => {
                 return "Please enter a valid email address! ";
             }
         },
-        {
+        {   // Ask for Engineer's GitHub username
             type: 'input',
             name: 'github',
-            message: "Please enter the Engineer's GitHub username: "
+            message: "Please enter the Engineer's GitHub username: ",
+            validate: answer => {
+                if (answer !== "") {
+                    return true;
+                }
+                return "Please enter a valid username! ";
+            }
         },
     ])
         .then((data) => {
@@ -153,20 +167,27 @@ newEngineer = () => {
             newEmployee();
         });
 }
+// Get information for the Intern
 newIntern = () => {
     inquirer.prompt([
-        {
+        {   // Ask for Intern's name
             type: 'input',
             name: 'name',
-            message: "Please enter the Intern's name: "
+            message: "Please enter the Intern's name: ",
+            validate: answer => {
+                if (answer !== "") {
+                    return true;
+                }
+                return "Please enter a name! ";
+            }
         },
-        {
+        {   // Ask for Intern's ID
             type: 'input',
             name: 'id',
             message: "Please enter the Intern's ID number: ",
             validate: answer => {
                 const pass = answer.match(/^[0-9]+$/);
-                if (pass) { 
+                if (pass) {
                     if (ids.includes(answer)) {
                         return "This ID is already in use! Please try again. ";
                     }
@@ -177,7 +198,7 @@ newIntern = () => {
                 return "Please enter a valid ID number! ";
             }
         },
-        {
+        {   // Ask for Intern's email address
             type: 'input',
             name: 'email',
             message: "Please enter the Intern's email address: ",
@@ -189,10 +210,16 @@ newIntern = () => {
                 return "Please enter a valid email address! ";
             }
         },
-        {
+        {   // Ask for Intern's school
             type: 'input',
             name: 'school',
-            message: "Please enter the Intern's school: "
+            message: "Please enter the Intern's school: ",
+            validate: answer => {
+                if (answer !== "") {
+                    return true;
+                }
+                return "Please enter a valid school name! ";
+            }
         }
     ])
         .then((data) => {
@@ -201,12 +228,5 @@ newIntern = () => {
             newEmployee();
         });
 }
-
+// Invoke Manager function upon program load
 newManager();
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
