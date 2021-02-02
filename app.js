@@ -37,6 +37,7 @@ newEmployee = () => {
                 newIntern();
                 break;
             case 'None of the above':
+                console.log("Success! ");
                 createTeam();
                 break;
         }
