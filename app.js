@@ -165,6 +165,7 @@ newEngineer = () => {
         .then((data) => {
             const engineer = new Engineer(data.name, data.id, data.email, data.github);
             team.push(engineer);
+            ids.push(data.id);
             newEmployee();
         });
 }
@@ -226,6 +227,7 @@ newIntern = () => {
         .then((data) => {
             const intern = new Intern(data.name, data.id, data.email, data.school);
             team.push(intern);
+            ids.push(data.id);
             newEmployee();
         });
 }
